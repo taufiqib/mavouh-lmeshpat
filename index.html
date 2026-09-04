@@ -623,6 +623,226 @@ body {
   max-width: 76ch;
 }
 
+/* ---------- הדפסה: כפתורים וחלון בחירה ---------- */
+.unit-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.4rem;
+}
+.unit-topline .back-btn { margin-bottom: 0; }
+.print-btn { display: inline-flex; align-items: center; gap: 0.4rem; }
+.print-btn .print-icon { font-size: 1.05em; }
+
+.print-dialog {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0;
+  width: min(520px, 92vw);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  font-family: var(--sans);
+  font-size: var(--fs-base);
+}
+.print-dialog::backdrop { background: rgba(10, 14, 22, 0.55); }
+.print-dialog form { padding: 1.2rem 1.5rem 1.3rem; }
+.print-dialog { max-height: 92vh; overflow-y: auto; }
+.print-dialog h2 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.4em;
+  margin: 0 0 0.2rem;
+}
+.pd-sub { margin: 0 0 0.9rem; color: var(--ink-soft); font-size: 0.9em; }
+.print-dialog fieldset {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.45rem 1rem 0.6rem;
+  margin: 0 0 0.7rem;
+}
+.print-dialog legend {
+  font-weight: 700;
+  color: var(--accent-strong);
+  padding: 0 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+[data-theme="dark"] .print-dialog legend { color: var(--accent); }
+.print-dialog label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.18rem 0;
+  cursor: pointer;
+  line-height: 1.45;
+}
+.print-dialog input[type="checkbox"], .print-dialog input[type="radio"] {
+  width: 1.15em;
+  height: 1.15em;
+  margin: 0.2em 0 0;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+.print-dialog label small { color: var(--ink-faint); display: block; font-size: 0.82em; line-height: 1.35; }
+.pd-exam-list label small { display: inline; margin-inline-start: 0.4rem; }
+.pd-exam-list label small::before { content: "· "; }
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--focus);
+  font-family: var(--sans);
+  font-size: 0.85em;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+.pd-exam-list { display: flex; flex-direction: column; }
+.pd-error { color: var(--wrong); margin: 0 0 0.8rem; font-size: 0.92em; }
+.pd-actions { display: flex; justify-content: flex-start; gap: 0.7rem; flex-wrap: wrap; margin-top: 0.4rem; }
+
+/* אזור ההדפסה מוסתר על המסך ומוצג רק בנייר */
+#printArea { display: none; }
+
+/* ---------- הדפסה: עיצוב הנייר ---------- */
+@media print {
+  @page { size: A4; margin: 15mm 14mm 17mm; }
+
+  :root, :root[data-theme="dark"] {
+    --bg: #fff;
+    --surface: #fff;
+    --surface-2: #f2f2f2;
+    --ink: #111;
+    --ink-soft: #444;
+    --ink-faint: #666;
+    --accent: #6f5312;
+    --accent-strong: #5a4210;
+    --accent-soft: #f6f1e4;
+    --line: #bbb;
+    --correct: #1e6b3a;
+    --wrong: #9c2b2b;
+    --shadow: none;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 11pt;
+    line-height: 1.55;
+  }
+  body > :not(#printArea) { display: none !important; }
+  #printArea { display: block; }
+  a[href]::after { content: none !important; }
+
+  .p-section { page-break-before: always; break-before: page; }
+  .p-section:first-child { page-break-before: auto; break-before: auto; }
+
+  .p-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.35rem;
+    margin: 0 0 1.1rem;
+    break-after: avoid;
+  }
+  .p-head h1 {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 19pt;
+    margin: 0;
+    line-height: 1.25;
+  }
+  .p-head .p-eyebrow { color: var(--accent); font-size: 9.5pt; margin: 0 0 0.15rem; font-weight: 500; }
+  .p-head .p-meta { color: #555; font-size: 9pt; text-align: left; white-space: nowrap; margin: 0; }
+  .p-intro { color: #444; font-size: 10pt; margin: 0 0 1rem; }
+
+  /* סיכום */
+  .p-summary.summary-body {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    max-width: none;
+    background: none;
+    font-size: 11pt;
+  }
+  .p-summary h2 { break-after: avoid; page-break-after: avoid; margin-top: 1.3rem; }
+  .p-summary h3 { break-after: avoid; page-break-after: avoid; }
+  .p-summary table { break-inside: auto; }
+  .p-summary tr { break-inside: avoid; page-break-inside: avoid; }
+  .p-summary blockquote { background: none; border-inline-start: 3px solid var(--accent); }
+
+  /* שאלות */
+  .p-list { list-style: none; padding: 0; margin: 0; }
+  .p-q {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin: 0 0 0.85rem;
+    padding: 0 0 0.6rem;
+    border-bottom: 1px dotted #aaa;
+  }
+  .p-q-num {
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 9.5pt;
+    margin: 0;
+  }
+  .p-q-text { font-weight: 500; margin: 0.1rem 0 0.4rem; }
+  .p-q-hint { color: #666; font-size: 9pt; margin: 0 0 0.3rem; }
+  .p-options { list-style: none; padding: 0; margin: 0; }
+  .p-options li { display: flex; gap: 0.45rem; align-items: flex-start; margin: 0.12rem 0; }
+  .p-options .p-box { flex-shrink: 0; width: 1.1em; }
+  .p-options .p-box::before { content: "☐"; }
+  .p-options li.is-key { font-weight: 700; }
+  .p-options li.is-key .p-box::before { content: "☑"; color: var(--correct); }
+  .p-options .p-letter { font-family: var(--serif); font-weight: 700; color: #555; flex-shrink: 0; }
+  .p-lines { margin-top: 0.35rem; }
+  .p-lines span { display: block; height: 1.9em; border-bottom: 1px solid #999; }
+  .p-answer, .p-explain {
+    border-inline-start: 3px solid var(--accent);
+    padding: 0.25rem 0.7rem;
+    margin: 0.45rem 0 0;
+    font-size: 10pt;
+    color: #333;
+    background: none;
+  }
+  .p-answer p, .p-explain p { margin: 0 0 0.4rem; }
+  .p-answer p:last-child, .p-explain p:last-child { margin-bottom: 0; }
+  .p-explain strong { color: var(--correct); }
+
+  /* מפתח תשובות */
+  .p-key table { width: 100%; border-collapse: collapse; font-size: 10pt; }
+  .p-key th, .p-key td { border: 1px solid #bbb; padding: 0.3rem 0.55rem; text-align: right; vertical-align: top; }
+  .p-key th { background: #f2f2f2; font-weight: 700; }
+  .p-key tr { break-inside: avoid; page-break-inside: avoid; }
+  .p-key td.p-key-n { width: 3.2em; text-align: center; font-family: var(--serif); font-weight: 700; }
+  .p-key td.p-key-a { width: 5.5em; text-align: center; font-weight: 700; color: var(--correct); white-space: nowrap; }
+  .p-key h2 {
+    font-family: var(--serif);
+    font-size: 13pt;
+    margin: 1rem 0 0.4rem;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  .p-key h2:first-of-type { margin-top: 0; }
+  .p-key .p-key-open { font-weight: 400; color: #333; }
+
+  .p-foot {
+    margin-top: 1.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid #bbb;
+    color: #666;
+    font-size: 8.5pt;
+    text-align: center;
+  }
+}
+
 /* ---------- מובייל ---------- */
 .scrim {
   position: fixed;
@@ -712,7 +932,10 @@ body {
     <!-- מסך יחידה -->
     <section id="unitView" class="view" hidden>
       <header class="unit-header">
-        <button class="back-btn" id="backBtn">→ חזרה לכל היחידות</button>
+        <div class="unit-topline">
+          <button class="back-btn" id="backBtn">→ חזרה לכל היחידות</button>
+          <button class="ghost-btn print-btn" id="unitPrintBtn" title="הדפסת היחידה"><span class="print-icon" aria-hidden="true">🖨️</span>הדפסה</button>
+        </div>
         <p class="unit-eyebrow" id="unitNumber"></p>
         <h1 id="unitTitle"></h1>
         <div class="unit-rule" aria-hidden="true"></div>
@@ -736,7 +959,10 @@ body {
     <!-- מסך יחידת המבחנים -->
     <section id="examView" class="view" hidden>
       <header class="unit-header">
-        <button class="back-btn" id="examBackBtn">→ חזרה</button>
+        <div class="unit-topline">
+          <button class="back-btn" id="examBackBtn">→ חזרה</button>
+          <button class="ghost-btn print-btn" id="examPrintBtn" title="הדפסת מבחנים"><span class="print-icon" aria-hidden="true">🖨️</span>הדפסה</button>
+        </div>
         <p class="unit-eyebrow" id="examEyebrow">יחידת המבחנים</p>
         <h1 id="examTitle">מבחני תרגול — כל הקורס</h1>
         <div class="unit-rule" aria-hidden="true"></div>
@@ -766,6 +992,43 @@ body {
   <p class="foot-credit">המערכת פותחה על ידי <strong>Soulware · Taufiq Ibrahim</strong> — כל הזכויות שמורות ©</p>
   <p>נבנה ללמידה אישית · ניתן לנווט במקלדת: Tab למעבר, Enter לבחירה</p>
 </footer>
+
+<!-- חלון בחירת הדפסה -->
+<dialog id="printDialog" class="print-dialog" aria-labelledby="printDialogTitle">
+  <form id="printForm" novalidate>
+    <h2 id="printDialogTitle">הדפסה</h2>
+    <p class="pd-sub">בחרו מה להדפיס. ההדפסה מותאמת לנייר A4 בצבעים בהירים, ללא כפתורים ותפריטים.</p>
+
+    <fieldset id="pdUnitSection">
+      <legend id="pdUnitLegend">תוכן היחידה</legend>
+      <label><input type="checkbox" name="summary" id="pdSummary" checked> <span>הסיכום</span></label>
+      <label><input type="checkbox" name="questions" id="pdQuestions" checked> <span>שאלות התרגול <small id="pdQuestionsCount"></small></span></label>
+    </fieldset>
+
+    <fieldset id="pdExamSection">
+      <legend>מבחני תרגול <button type="button" class="link-btn" id="pdExamsAll">בחירת הכל</button></legend>
+      <div class="pd-exam-list" id="pdExamList"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>תשובות</legend>
+      <label><input type="radio" name="answers" value="none" checked> <span>בלי תשובות<small>לתרגול על הדף — עם משבצות סימון ושורות לכתיבה</small></span></label>
+      <label><input type="radio" name="answers" value="key"> <span>מפתח תשובות בסוף<small>השאלות נקיות, והתשובות וההסברים מרוכזים בעמוד נפרד בסוף</small></span></label>
+      <label><input type="radio" name="answers" value="inline"> <span>תשובה והסבר מתחת לכל שאלה<small>מתאים לחזרה על החומר</small></span></label>
+    </fieldset>
+
+    <p class="pd-error" id="pdError" hidden role="alert">לא נבחר שום דבר להדפסה — סמנו לפחות פריט אחד.</p>
+
+    <div class="pd-actions">
+      <button type="submit" class="q-reveal-btn">🖨️ שליחה להדפסה</button>
+      <button type="button" class="ghost-btn" id="pdCancel">ביטול</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- אזור ההדפסה: מתמלא לפי הבחירה ומוצג רק בנייר -->
+<div id="printArea" aria-hidden="true"></div>
+
 
 <!-- קבצי נתונים: כל יחידה בקובץ נפרד. יחידה שעדיין לא נוספה — פשוט אין לה קובץ. -->
 <script>
@@ -1347,6 +1610,197 @@ const App = (() => {
     document.getElementById("backBtn").addEventListener("click", showHome);
   }
 
+  /* ---------- הדפסה ---------- */
+  let printContext = {};
+
+  function openPrintDialog(ctx) {
+    printContext = ctx || {};
+    const dlg = document.getElementById("printDialog");
+    const unit = ctx.unit ? units[ctx.unit] : null;
+
+    // חלק היחידה מוצג רק כשמדפיסים מתוך יחידה
+    const unitSection = document.getElementById("pdUnitSection");
+    unitSection.hidden = !unit;
+    if (unit) {
+      document.getElementById("pdUnitLegend").textContent = `יחידה ${HEB_LETTERS[unit.id - 1]}׳ — ${unit.title}`;
+      const n = (unit.questions || []).length;
+      document.getElementById("pdQuestionsCount").textContent = n ? `(${n} שאלות)` : "(אין שאלות עדיין)";
+      document.getElementById("pdSummary").checked = !!unit.summary;
+      document.getElementById("pdSummary").disabled = !unit.summary;
+      document.getElementById("pdQuestions").checked = n > 0;
+      document.getElementById("pdQuestions").disabled = n === 0;
+    }
+
+    // רשימת המבחנים
+    const examSection = document.getElementById("pdExamSection");
+    const list = document.getElementById("pdExamList");
+    list.innerHTML = "";
+    // המבחנים מוצעים להדפסה רק מתוך יחידת המבחנים
+    const showExams = !!exams && !unit;
+    examSection.hidden = !showExams;
+    if (showExams) {
+      exams.parts.forEach((part, i) => {
+        const checked = ctx.exam !== undefined && ctx.exam !== null ? ctx.exam === i : (ctx.allExams === true);
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="checkbox" name="exam" value="${i}"${checked ? " checked" : ""}> ` +
+          `<span>${esc(part.title)}<small>${part.questions.length} שאלות</small></span>`;
+        list.appendChild(label);
+      });
+    }
+
+    document.getElementById("pdError").hidden = true;
+    if (typeof dlg.showModal === "function") dlg.showModal();
+    else dlg.setAttribute("open", "");
+  }
+
+  function readPrintOptions() {
+    const form = document.getElementById("printForm");
+    const unit = printContext.unit ? units[printContext.unit] : null;
+    return {
+      unit,
+      summary: !!unit && document.getElementById("pdSummary").checked && !!unit.summary,
+      questions: !!unit && document.getElementById("pdQuestions").checked && (unit.questions || []).length > 0,
+      exams: (exams && !unit) ? [...form.querySelectorAll('input[name="exam"]:checked')].map(i => Number(i.value)) : [],
+      answers: form.querySelector('input[name="answers"]:checked').value
+    };
+  }
+
+  /** בונה שאלה אחת לנייר; מוסיף שורה למפתח התשובות אם צריך */
+  function renderPrintQuestion(q, idx, mode, keyRows) {
+    const isOpen = q.type === "open";
+    const isMsq = q.type === "msq";
+    const correct = new Set(isMsq ? (q.answers || []) : (q.answer !== undefined ? [q.answer] : []));
+    const letters = [...correct].sort((a, b) => a - b).map(a => OPT_LETTERS[a]).join(", ");
+
+    let html = `<li class="p-q"><p class="p-q-num">שאלה ${idx + 1}</p><p class="p-q-text">${q.q}</p>`;
+
+    if (isOpen) {
+      if (mode === "inline") {
+        html += `<div class="p-answer">${q.answerHtml || `<p>${esc(q.answer || "")}</p>`}</div>`;
+      } else {
+        html += `<div class="p-lines"><span></span><span></span><span></span><span></span><span></span></div>`;
+      }
+      if (mode === "key") {
+        keyRows.push({ n: idx + 1, a: "שאלה פתוחה", text: q.answerHtml || `<p>${esc(q.answer || "")}</p>`, open: true });
+      }
+    } else {
+      if (isMsq) html += `<p class="p-q-hint">שאלה מרובת תשובות — ייתכן שיותר מתשובה אחת נכונה.</p>`;
+      html += `<ol class="p-options">`;
+      (q.options || []).forEach((opt, oi) => {
+        const isKey = mode === "inline" && correct.has(oi);
+        html += `<li${isKey ? ' class="is-key"' : ""}><span class="p-box" aria-hidden="true"></span><span class="p-letter">${OPT_LETTERS[oi]}.</span><span>${opt}</span></li>`;
+      });
+      html += `</ol>`;
+      if (mode === "inline") {
+        html += `<div class="p-explain"><strong>${isMsq ? "התשובות הנכונות" : "התשובה הנכונה"}: ${letters}.</strong>` +
+          (q.explain ? ` ${q.explain}` : "") + `</div>`;
+      }
+      if (mode === "key") {
+        keyRows.push({ n: idx + 1, a: letters, text: q.explain || "" });
+      }
+    }
+    return html + `</li>`;
+  }
+
+  function renderPrintHead(eyebrow, title, meta) {
+    return `<header class="p-head"><div>` +
+      `<p class="p-eyebrow">${esc(eyebrow)}</p><h1>${esc(title)}</h1></div>` +
+      `<p class="p-meta">${esc(meta)}</p></header>`;
+  }
+
+  function renderKeyTable(rows) {
+    return `<table><thead><tr><th>שאלה</th><th>תשובה</th><th>הסבר</th></tr></thead><tbody>` +
+      rows.map(r =>
+        `<tr><td class="p-key-n">${r.n}</td>` +
+        `<td class="p-key-a${r.open ? " p-key-open" : ""}">${esc(r.a)}</td>` +
+        `<td>${r.text}</td></tr>`
+      ).join("") + `</tbody></table>`;
+  }
+
+  function buildPrintArea(opts) {
+    const area = document.getElementById("printArea");
+    const sections = [];
+    const keys = []; // { title, rows }
+    const date = new Date().toLocaleDateString("he-IL");
+    const course = "מבוא למשפט";
+
+    if (opts.unit) {
+      const u = opts.unit;
+      const unitLabel = `יחידה ${HEB_LETTERS[u.id - 1]}׳ · ${course}`;
+
+      if (opts.summary) {
+        sections.push(`<section class="p-section">` +
+          renderPrintHead(unitLabel, u.title, `סיכום · ${date}`) +
+          `<div class="summary-body p-summary">${u.summary}</div></section>`);
+      }
+      if (opts.questions) {
+        const rows = [];
+        const qs = u.questions || [];
+        sections.push(`<section class="p-section">` +
+          renderPrintHead(unitLabel, `שאלות תרגול — ${u.title}`, `${qs.length} שאלות · ${date}`) +
+          `<ol class="p-list">${qs.map((q, i) => renderPrintQuestion(q, i, opts.answers, rows)).join("")}</ol></section>`);
+        if (rows.length) keys.push({ title: `שאלות תרגול — ${u.title}`, rows });
+      }
+    }
+
+    opts.exams.forEach(i => {
+      const part = exams.parts[i];
+      if (!part) return;
+      const rows = [];
+      const qs = part.questions;
+      sections.push(`<section class="p-section">` +
+        renderPrintHead(`מבחני תרגול · ${course}`, part.title, `${qs.length} שאלות · 4 נקודות לשאלה · ${date}`) +
+        (opts.answers === "none" ? `<p class="p-intro">ציון עובר: 60. סמנו תשובה אחת לכל שאלה.</p>` : "") +
+        `<ol class="p-list">${qs.map((q, qi) => renderPrintQuestion(q, qi, opts.answers, rows)).join("")}</ol></section>`);
+      if (rows.length) keys.push({ title: part.title, rows });
+    });
+
+    if (opts.answers === "key" && keys.length) {
+      sections.push(`<section class="p-section p-key">` +
+        renderPrintHead(course, "מפתח תשובות", date) +
+        keys.map(k => `<h2>${esc(k.title)}</h2>${renderKeyTable(k.rows)}`).join("") +
+        `</section>`);
+    }
+
+    area.innerHTML = sections.join("") +
+      `<p class="p-foot">${course} · מערכת לימוד אישית · Soulware · Taufiq Ibrahim</p>`;
+  }
+
+  function initPrint() {
+    const dlg = document.getElementById("printDialog");
+
+    document.getElementById("unitPrintBtn").addEventListener("click", () => {
+      if (currentUnit) openPrintDialog({ unit: currentUnit });
+    });
+    document.getElementById("examPrintBtn").addEventListener("click", () => {
+      const running = !document.getElementById("examRun").hidden;
+      openPrintDialog(running ? { exam: currentExam } : { allExams: true });
+    });
+    document.getElementById("pdCancel").addEventListener("click", () => dlg.close());
+
+    document.getElementById("pdExamsAll").addEventListener("click", () => {
+      const boxes = [...document.querySelectorAll('#pdExamList input[type="checkbox"]')];
+      const all = boxes.every(b => b.checked);
+      boxes.forEach(b => { b.checked = !all; });
+    });
+
+    document.getElementById("printForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const opts = readPrintOptions();
+      const hasContent = opts.summary || opts.questions || opts.exams.length > 0;
+      document.getElementById("pdError").hidden = hasContent;
+      if (!hasContent) return;
+      dlg.close();
+      buildPrintArea(opts);
+      // המתנה קצרה כדי שהחלון ייסגר לפני פתיחת דו־שיח ההדפסה
+      setTimeout(() => window.print(), 80);
+    });
+
+    window.addEventListener("afterprint", () => {
+      document.getElementById("printArea").innerHTML = "";
+    });
+  }
+
   /* ---------- עזר ---------- */
   function esc(s) {
     return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -1358,6 +1812,7 @@ const App = (() => {
     initMenu();
     initQuizControls();
     initExamControls();
+    initPrint();
     buildNav();
   }
 
